@@ -50,9 +50,13 @@ def main():
     args = parser.parse_args()
     torch.cuda.set_device(args.gpu_id)
 
-    dataset = DBreader_Vimeo90k(args.train, random_crop=(args.patch_size, args.patch_size))
-    TestDB = Middlebury_other(args.test_input, args.gt)
-    train_loader = DataLoader(dataset=dataset, batch_size=args.batch_size, shuffle=True, num_workers=0)
+    from atd12k import get_loader
+    train_loader = get_loader('train', args.train, args.batch_size, shuffle=True)
+    val_loader = get_loader('test', args.train, args.batch_size, shuffle=False)
+
+    # dataset = DBreader_Vimeo90k(args.train, random_crop=(args.patch_size, args.patch_size))
+    # TestDB = Middlebury_other(args.test_input, args.gt)
+    # train_loader = DataLoader(dataset=dataset, batch_size=args.batch_size, shuffle=True, num_workers=0)
     model = models.Model(args)
     loss = losses.Loss(args)
 
@@ -62,7 +66,7 @@ def main():
         model.load(checkpoint['state_dict'])
         start_epoch = checkpoint['epoch']
 
-    my_trainer = Trainer(args, train_loader, TestDB, model, loss, start_epoch)
+    my_trainer = Trainer(args, train_loader, val_loader, model, loss, start_epoch)
 
     now = datetime.datetime.now().strftime('%Y-%m-%d-%H:%M:%S')
     with open(args.out_dir + '/config.txt', 'a') as f:
