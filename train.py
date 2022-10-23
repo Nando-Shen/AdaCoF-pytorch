@@ -27,7 +27,7 @@ parser.add_argument('--gt', type=str, default='./test_input/middlebury_others/gt
 
 # Learning Options
 parser.add_argument('--epochs', type=int, default=50, help='Max Epochs')
-parser.add_argument('--batch_size', type=int, default=4, help='Batch size')
+parser.add_argument('--batch_size', type=int, default=8, help='Batch size')
 parser.add_argument('--loss', type=str, default='1*Charb+0.01*g_Spatial+0.005*g_Occlusion', help='loss function configuration')
 parser.add_argument('--patch_size', type=int, default=256, help='Patch size')
 
