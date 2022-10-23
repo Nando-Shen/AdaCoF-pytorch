@@ -2,7 +2,10 @@ import os
 import torch
 import utility
 from utility import to_variable
+from utils.pytorch_msssim import ssim_matlab
+from math import log10
 
+MSE_LossFn = torch.nn.MSELoss()
 
 class Trainer:
     def __init__(self, args, train_loader, test_loader, my_model, my_loss, start_epoch=0):
@@ -30,8 +33,8 @@ class Trainer:
         self.logfile = open(args.out_dir + '/log.txt', 'w')
 
         # Initial Test
-        self.model.eval()
-        self.test_loader.Test(self.model, self.result_dir, self.current_epoch, self.logfile, str(self.current_epoch).zfill(3) + '.png')
+        # self.model.eval()
+        # self.test_loader.Test(self.model, self.result_dir, self.current_epoch, self.logfile, str(self.current_epoch).zfill(3) + '.png')
 
     def train(self):
         # Train
@@ -57,7 +60,11 @@ class Trainer:
         # Test
         torch.save({'epoch': self.current_epoch, 'state_dict': self.model.get_state_dict()}, self.ckpt_dir + '/model_epoch' + str(self.current_epoch).zfill(3) + '.pth')
         self.model.eval()
-        self.test_loader.Test(self.model, self.result_dir, self.current_epoch, self.logfile, str(self.current_epoch).zfill(3) + '.png')
+        psnr, ssim = self.validate()
+        print("Epoch: ", self.current_epoch)
+        print("ValPSNR: %0.4f ValSSIM: %0.4f" % (psnr, ssim))
+        self.logfile.write("ValPSNR: %0.4f ValSSIM: %0.4f" % (psnr, ssim))
+        # self.test_loader.Test(self.model, self.result_dir, self.current_epoch, self.logfile, str(self.current_epoch).zfill(3) + '.png')
         self.logfile.write('\n')
 
     def terminate(self):
@@ -65,3 +72,26 @@ class Trainer:
 
     def close(self):
         self.logfile.close()
+
+
+    def validate(self):
+        psnr = 0
+        ssim = 0
+        with torch.no_grad():
+            for validationIndex, (validationData, validationFrameIndex) in enumerate(self.test_loader, 0):
+                frame0, frameT, frame1 = validationData
+
+                I0 = to_variable(frame0)
+                I1 = to_variable(frame1)
+                IFrame = to_variable(frameT)
+
+                Ft_p = self.model(I0, I1)
+
+                # psnr
+                MSE_val = MSE_LossFn(Ft_p, IFrame)
+                psnr += (10 * log10(1 / MSE_val.item()))
+
+                # ssim
+                ssim += ssim_matlab(IFrame.clamp(0, 1), Ft_p.clamp(0, 1), val_range=1.)
+
+        return (psnr / len(self.test_loader)), (ssim / len(self.test_loader))
