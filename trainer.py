@@ -33,7 +33,12 @@ class Trainer:
         self.logfile = open(args.out_dir + '/log.txt', 'w')
 
         # Initial Test
-        # self.model.eval()
+        self.model.eval()
+        psnr, ssim = self.validate()
+        print("Epoch: ", self.current_epoch)
+        print("ValPSNR: %0.4f ValSSIM: %0.4f" % (psnr, ssim))
+        self.logfile.write("ValPSNR: %0.4f ValSSIM: %0.4f" % (psnr, ssim))
+        self.logfile.write('\n')
         # self.test_loader.Test(self.model, self.result_dir, self.current_epoch, self.logfile, str(self.current_epoch).zfill(3) + '.png')
 
     def train(self):
@@ -64,7 +69,6 @@ class Trainer:
         print("Epoch: ", self.current_epoch)
         print("ValPSNR: %0.4f ValSSIM: %0.4f" % (psnr, ssim))
         self.logfile.write("ValPSNR: %0.4f ValSSIM: %0.4f" % (psnr, ssim))
-        # self.test_loader.Test(self.model, self.result_dir, self.current_epoch, self.logfile, str(self.current_epoch).zfill(3) + '.png')
         self.logfile.write('\n')
 
     def terminate(self):
@@ -78,8 +82,7 @@ class Trainer:
         psnr = 0
         ssim = 0
         with torch.no_grad():
-            for validationIndex, (validationData, validationFrameIndex) in enumerate(self.test_loader, 0):
-                frame0, frameT, frame1 = validationData
+            for validationIndex, (frame0, frameT, frame1) in enumerate(self.test_loader, 0):
 
                 I0 = to_variable(frame0)
                 I1 = to_variable(frame1)
