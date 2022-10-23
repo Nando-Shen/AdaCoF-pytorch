@@ -1,7 +1,7 @@
 #!/bin/bash
 #PBS -P VUR
 #PBS -l select=1:ncpus=4:ngpus=1:mem=16GB
-#PBS -l walltime=00:10:00
+#PBS -l walltime=00:50:00
 #PBS -j oe
 
 cd /project/VUR/jshe2377/AdaCoF-pytorch
@@ -9,5 +9,7 @@ cd /project/VUR/jshe2377/AdaCoF-pytorch
 module load python/3.8.2 magma/2.5.3 openmpi-gcc/3.1.5
 source /home/jshe2377/NeuS/neus/bin/activate
 module load cuda/10.2.89
+nvcc --version
+nvidia-smi
 
 python train.py --train /project/VUR/jshe2377/atd12k_points --out_dir /project/VUR/jshe2377/AdaCoF-pytorch/output
