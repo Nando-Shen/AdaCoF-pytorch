@@ -69,14 +69,14 @@ class ATD12k(Dataset):
 
             images = images[:3]
 
-            return images, 3
+            return images
         else:
             T = self.transforms
             images = [T(img_) for img_ in images]
 
             images = images[:3]
 
-            return images, 3
+            return images
 
     def __len__(self):
         if self.training:
