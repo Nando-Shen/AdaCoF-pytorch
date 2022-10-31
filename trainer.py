@@ -95,8 +95,8 @@ class Trainer:
 
                 for idx in range(Ft_p.size()[0]):
                     # print(idx)
-                    print(datapath[idx])
-                    # imwrite(Ft_p[idx], 'adacofoutput/'+datapath[idx]+'/adacof')
+                    # print(datapath[idx])
+                    imwrite(Ft_p[idx], self.result_dir+'/'+datapath[idx]+'/adacof.png')
 
                 # psnr
                 MSE_val = MSE_LossFn(Ft_p, IFrame)
