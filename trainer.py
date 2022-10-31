@@ -94,7 +94,8 @@ class Trainer:
                 print(Ft_p.size())
 
                 for idx in range(Ft_p.size()[0]):
-                    print(idx)
+                    # print(idx)
+                    print(Ft_p[idx].size())
                     # imwrite(Ft_p[idx], 'adacofoutput/'+datapath+'/adacof')
 
                 # psnr
