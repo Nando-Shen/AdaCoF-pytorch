@@ -1,6 +1,7 @@
 import os
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
+import torch
 from PIL import Image
 import random
 
@@ -76,7 +77,7 @@ class ATD12k(Dataset):
 
             images = images[:3]
 
-            return images
+            return images, self.data_list[3]
 
     def __len__(self):
         if self.training:

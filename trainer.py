@@ -4,6 +4,7 @@ import utility
 from utility import to_variable
 from utils.pytorch_msssim import ssim_matlab
 from math import log10
+from torchvision.utils import save_image as imwrite
 
 MSE_LossFn = torch.nn.MSELoss()
 
@@ -82,13 +83,19 @@ class Trainer:
         psnr = 0
         ssim = 0
         with torch.no_grad():
-            for validationIndex, (frame0, frameT, frame1) in enumerate(self.test_loader, 0):
+            for validationIndex, (frame0, frameT, frame1), datapath in enumerate(self.test_loader, 0):
 
                 I0 = to_variable(frame0)
                 I1 = to_variable(frame1)
                 IFrame = to_variable(frameT)
 
                 Ft_p = self.model(I0, I1)
+
+                print(Ft_p.size())
+
+                for idx in range(Ft_p.size()[0]):
+                    print(idx)
+                    # imwrite(Ft_p[idx], 'adacofoutput/'+datapath+'/adacof')
 
                 # psnr
                 MSE_val = MSE_LossFn(Ft_p, IFrame)

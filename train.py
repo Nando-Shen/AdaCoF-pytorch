@@ -75,9 +75,9 @@ def main():
             f.write('{}: {}\n'.format(arg, getattr(args, arg)))
         f.write('\n')
 
-    while not my_trainer.terminate():
-        my_trainer.train()
-        my_trainer.test()
+    # while not my_trainer.terminate():
+    #     my_trainer.train()
+    #     my_trainer.test()
 
     my_trainer.close()
 
