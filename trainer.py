@@ -83,7 +83,7 @@ class Trainer:
         psnr = 0
         ssim = 0
         with torch.no_grad():
-            for validationIndex, (frame0, frameT, frame1), datapath in enumerate(self.test_loader, 0):
+            for validationIndex, ((frame0, frameT, frame1), datapath) in enumerate(self.test_loader, 0):
 
                 I0 = to_variable(frame0)
                 I1 = to_variable(frame1)
