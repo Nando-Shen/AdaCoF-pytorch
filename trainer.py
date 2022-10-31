@@ -96,6 +96,7 @@ class Trainer:
                 for idx in range(Ft_p.size()[0]):
                     # print(idx)
                     # print(datapath[idx])
+                    os.makedirs(self.result_dir+'/'+datapath[idx])
                     imwrite(Ft_p[idx], self.result_dir+'/'+datapath[idx]+'/adacof.png')
 
                 # psnr
